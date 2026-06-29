@@ -40,6 +40,15 @@ The platform securely connects **Donors**, **Organizations**, and **Administrato
 
 ---
 
+# 👥 Team Members
+
+| Name | Role |
+|------|------|
+| Dhanush K P | Backend Development, Authentication & Database |
+| Varshith V V | Frontend Development |
+| Soorya Kiran Pola | UI/UX Design |
+| Lulu Mol Kunnath | Testing & Documentation |
+
 # ✨ Key Highlights
 
 🩸 Smart Blood Group Matching
@@ -133,7 +142,7 @@ flowchart TB
 
 # 📸 Screenshots
 
-(Add screenshots here)
+
 
 ---
 
@@ -152,6 +161,12 @@ flowchart TB
 🏥 Hospital API Integration
 
 ---
+
+# 🤝 Project Credits
+
+PulseConnect was developed as a collaborative academic project by a team of four Computer Science students.
+
+Each member contributed to different aspects of the project, including backend development, frontend development, database design, UI/UX, testing, and documentation.
 
 <p align="center">
 
