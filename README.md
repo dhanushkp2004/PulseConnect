@@ -139,10 +139,23 @@ flowchart TB
 ✅ Responsive UI
 
 ---
-
 # 📸 Screenshots
 
+### 🏠 Home Page
 
+![Home](Home.png)
+
+### ❤️ Donor Dashboard
+
+![Donor](Dashboard.png)
+
+### 🏥 Donor Registration
+
+![Organization](Register.png)
+
+### 🛡 Admin Dashboard
+
+![Admin](Admin.png)
 
 ---
 
