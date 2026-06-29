@@ -1,0 +1,167 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="hero-section">
+            <div class="cyber-glass-card text-center p-5 mx-auto"
+                style="max-width: 800px; padding: 4rem 2rem !important;">
+                <h1 class="display-3 fw-bolder mb-3"
+                    style="letter-spacing: -1px; text-shadow: 0 4px 20px rgba(0,0,0,0.8);">
+                    Donate Blood,<br>Save Lives
+                </h1>
+                <p class="lead mb-4 fs-4 text-white" style="text-shadow: 0 2px 10px rgba(0,0,0,0.8); opacity: 0.9;">Join
+                    PulseConnect to instantly link with those in need during emergencies. Clean, fast, and
+                    community-driven.</p>
+                {% if not session.get('user_id') %}
+                <div class="d-flex justify-content-center flex-wrap gap-3 mt-5">
+                    <a href="/register" class="btn btn-cyber-crimson btn-lg fw-bold rounded-pill px-5">Become a
+                        Donor</a>
+                    <a href="/login" class="btn btn-cyber-outline btn-lg fw-bold rounded-pill px-5">Login</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row mt-5" id="urgent-requests">
+    <div class="col-12">
+        <div
+            class="d-flex justify-content-between align-items-center border-bottom border-secondary pb-2 mb-4 flex-wrap">
+            <h2 class="mb-0 fw-bold d-flex align-items-center">
+                <div class="blood-drop-icon"></div> Urgent Blood Search Panel
+            </h2>
+            <select class="form-select w-auto mt-2 mt-md-0" id="bloodGroupFilter"
+                style="min-width: 150px; background-color: rgba(7, 11, 25, 0.8);">
+                <option value="" disabled selected>Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+            </select>
+        </div>
+
+        <div id="donor-results" class="mt-4 mb-5"></div>
+        {% if requests %}
+        <div class="row g-4" id="requestsContainer">
+            {% for req in requests %}
+            <div class="col-md-6 col-lg-4 request-card-wrapper" data-blood-group="{{ req.requested_blood_group }}">
+                <div class="request-card h-100 p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h3 class="text-crimson-neon fw-bold mb-0" style="font-size: 2.5rem;">{{
+                            req.requested_blood_group }}</h3>
+                        <span
+                            class="badge bg-danger rounded-pill px-3 py-2 shadow border border-light border-opacity-25"
+                            style="box-shadow: 0 0 10px rgb(239, 237, 237) !important; background: rgb(239, 237, 237) !important;">Urgent</span>
+                    </div>
+                    <p class="fs-5 text-white">{{ req.patient_message }}</p>
+                    <hr class="border-secondary">
+                    <p class="mb-1 text-light"><strong>📞 Contact:</strong> <span class="text-muted">{{ req.contact_info
+                            }}</span></p>
+                    <small class="text-muted">Posted: {{ req.created_at.strftime('%m/%d/%Y at %H:%M') }}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+
+        const donorFilter = document.getElementById("bloodGroupFilter");
+        const donorResults = document.getElementById("donor-results");
+
+        if (donorFilter && donorResults) {
+            donorFilter.addEventListener("change", function () {
+                const selectedGroup = this.value;
+                if (!selectedGroup) {
+                    donorResults.innerHTML = "";
+                    return;
+                }
+
+                fetch(`/api/get_donors/${encodeURIComponent(selectedGroup)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.length > 0) {
+                            let tableHTML = `
+                            <div class="mb-3 text-white-50 small">
+                                <i class="fas fa-info-circle me-1"></i> Showing all donors eligible to donate to <strong>${selectedGroup}</strong> recipients.
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover table-bordered border-secondary table-striped mb-0">
+                                    <thead class="table-dark text-crimson-neon">
+                                        <tr>
+                                            <th>Donor Name</th>
+                                            <th>Blood Group</th>
+                                            <th>Contact Details</th>
+                                            <th>Eligibility</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                        `;
+                            data.forEach(donor => {
+                                // Eligibility calculation
+                                let eligibilityHTML = "";
+                                if (!donor.last_donation_date) {
+                                    eligibilityHTML = `<span class="badge bg-success border border-light border-opacity-25 px-3 py-2">Eligible (First Time)</span>`;
+                                } else {
+                                    const lastDate = new Date(donor.last_donation_date);
+                                    const gapDays = (donor.gender === 'Male' || donor.gender === 'male') ? 90 : 120;
+                                    const nextEligible = new Date(lastDate);
+                                    nextEligible.setDate(lastDate.getDate() + gapDays);
+                                    const today = new Date();
+
+                                    if (today >= nextEligible) {
+                                        eligibilityHTML = `<span class="badge bg-success border border-light border-opacity-25 px-3 py-2">Eligible</span>`;
+                                    } else {
+                                        eligibilityHTML = `
+                                            <div class="d-flex flex-column">
+                                                <span class="badge bg-warning text-dark border border-dark border-opacity-25 px-3 py-2 mb-1">Wait Period</span>
+                                                <small class="text-muted" style="font-size: 0.75rem;">Eligible on: ${nextEligible.toLocaleDateString()}</small>
+                                            </div>
+                                        `;
+                                    }
+                                }
+
+                                tableHTML += `
+                                <tr>
+                                    <td class="align-middle fw-bold">${donor.name}</td>
+                                    <td class="align-middle">
+                                        <span class="badge ${donor.blood_group === selectedGroup ? 'bg-danger' : 'bg-secondary'} border border-light border-opacity-25">
+                                            ${donor.blood_group}
+                                        </span>
+                                    </td>
+                                    <td class="align-middle">📞 ${donor.phone}<br>✉️ ${donor.email}</td>
+                                    <td class="align-middle">${eligibilityHTML}</td>
+                                </tr>
+                            `;
+                            });
+                            tableHTML += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                            donorResults.innerHTML = tableHTML;
+                        } else {
+                            donorResults.innerHTML = `<div class="alert alert-warning bg-warning bg-opacity-25 border-warning text-light text-center mb-0" role="alert">No eligible donors found for blood group ${selectedGroup}.</div>`;
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error fetching donors:", error);
+                        donorResults.innerHTML = `<div class="alert alert-danger shadow-sm text-center mb-0">❌ Error loading donor details.</div>`;
+                    });
+            });
+        }
+    });
+</script>
+{% endblock %}

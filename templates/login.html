@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8 col-lg-6">
+        <div class="cyber-glass-card p-4 p-md-5">
+            <h2 class="text-center mb-4 text-crimson-neon fw-bold">Welcome Back</h2>
+
+            <form action="/login" method="POST">
+                <div class="mb-4">
+                    <label class="form-label">Login As</label>
+                    <select class="form-select" name="role" required>
+                        <option value="donor" selected>Donor</option>
+                        <option value="organization">Organization</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="text" class="form-control" name="email_or_username" required>
+                </div>
+
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label mb-0">Password</label>
+                        <a href="/forgot-password" class="text-cyan-neon text-decoration-none small fw-bold">Forgot Password?</a>
+                    </div>
+                    <div class="input-group">
+                        <input type="password" class="form-control border-end-0" name="password" required>
+                        <button class="btn btn-outline-secondary border-start-0 bg-transparent text-white-50" type="button" onclick="togglePassword(this)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-cyber-crimson w-100 rounded-pill py-2 text-white">Login</button>
+            </form>
+
+            <p class="text-center mt-4 text-white">New to PulseConnect? <a href="/register"
+                    class="text-cyan-neon text-decoration-none fw-bold">Create an account</a></p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

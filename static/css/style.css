@@ -1,0 +1,323 @@
+:root {
+  --bg-cyber-dark: #070B19;
+  /* Deep dark blue space */
+  --bg-cyber-light: #0B1124;
+  /* Secondary dark blue */
+  --cyan-glow: #00E5FF;
+  /* Futuristic glowing cyan */
+  --crimson-neon: #FF1053;
+  /* Bright crimson neon CTA */
+  --text-pure: #FFFFFF;
+  --text-muted: #fcfcfc;
+  /* Lighter muted text for readability */
+  --glass-border: rgba(255, 255, 255, 0.977);
+  --glass-bg: rgba(15, 22, 38, 0.7);
+  /* Darker glass for better text contrast */
+}
+
+body {
+  background: radial-gradient(circle at center, var(--bg-cyber-light) 0%, var(--bg-cyber-dark) 100%);
+  color: var(--text-pure);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+/* Structural Background Grid */
+.bg-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image:
+    linear-gradient(rgba(13, 230, 230, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 230, 230, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  z-index: -4;
+  pointer-events: none;
+}
+
+/* Glowing Cyan EKG Pulse Line */
+.bg-ekg-pulse {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  width: 100vw;
+  height: 300px;
+  transform: translateY(-50%);
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 300' preserveAspectRatio='none'%3E%3Cpath d='M0 150 L200 150 L250 150 L280 180 L310 90 L350 220 L380 150 L800 150 L850 150 L870 120 L900 250 L930 50 L980 150 L1200 150' fill='none' stroke='%2300E5FF' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' filter='url(%23glow)'/%3E%3Cdefs%3E%3Cfilter id='glow' x='-20%25' y='-20%25' width='140%25' height='140%25'%3E%3CfeGaussianBlur stdDeviation='6' result='blur'/%3E%3CfeMerge%3E%3CfeMergeNode in='blur'/%3E%3CfeMergeNode in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3C/svg%3E") repeat-x center center;
+  background-size: 1200px 300px;
+  opacity: 0.6;
+  z-index: -3;
+  pointer-events: none;
+  animation: ekg-scroll-right 4s linear infinite;
+}
+
+@keyframes ekg-scroll-right {
+  from {
+    background-position: 0 center;
+  }
+
+  to {
+    background-position: 1200px center;
+  }
+}
+
+/* Donor Dashboard HQ Background override */
+.bg-donor-dashboard {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(to bottom, rgba(7, 11, 25, 0.8) 0%, rgba(11, 17, 36, 0.9) 100%),
+    url('../img/donor_bg.png') no-repeat center center;
+  background-size: cover;
+  z-index: -4;
+  pointer-events: none;
+}
+
+/* Top Navigation */
+.navbar-custom {
+  background: rgba(7, 11, 25, 0.5) !important;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(13, 230, 230, 0.1);
+  /* Cyan tinged border */
+}
+
+.navbar-brand {
+  font-weight: 700;
+  color: var(--text-pure) !important;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.navbar-custom .nav-link {
+  color: var(--text-muted) !important;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.navbar-custom .nav-link:hover {
+  color: var(--cyan-glow) !important;
+  text-shadow: 0 0 10px rgba(13, 230, 230, 0.5);
+}
+
+/* Sophisticated Cyber Glass Card */
+.cyber-glass-card {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border-radius: 1.5rem;
+  /* Clean rounded corners */
+  box-shadow:
+    0 30px 60px -15px rgba(0, 0, 0, 0.9),
+    inset 0 0 15px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-pure);
+}
+
+/* Typography Variations */
+.text-crimson-neon {
+  color: var(--crimson-neon);
+  text-shadow: 0 0 25px rgba(255, 16, 83, 0.6);
+}
+
+.text-cyan-neon {
+  color: var(--cyan-glow);
+  text-shadow: 0 0 15px rgba(13, 230, 230, 0.4);
+}
+
+/* Form Elements */
+.form-control,
+.form-select {
+  border: 1px solid rgba(13, 230, 230, 0.2);
+  /* Subtle cyan border */
+  color: var(--text-pure);
+  background-color: rgba(7, 11, 25, 0.5);
+  backdrop-filter: blur(12px);
+  padding: 0.8rem 1rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+}
+
+.form-select option {
+  background-color: var(--bg-cyber-dark);
+  color: var(--text-pure);
+}
+
+.form-label {
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--cyan-glow);
+  background-color: rgba(18, 26, 47, 0.8);
+  color: var(--text-pure);
+  box-shadow: 0 0 15px rgba(13, 230, 230, 0.3);
+  outline: none;
+}
+
+/* Call To Action Buttons */
+.btn-cyber-crimson {
+  background: linear-gradient(180deg, #b30026 0%, #730018 100%);
+  border: 1px solid #FF1053;
+  color: white;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  box-shadow: 0 4px 20px rgba(255, 16, 83, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.3);
+}
+
+.btn-cyber-crimson:hover {
+  background: linear-gradient(180deg, #cc002d 0%, #8b001d 100%);
+  transform: translateY(-3px) scale(1.02);
+  color: white;
+  box-shadow: 0 8px 30px rgba(255, 16, 83, 0.8), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+.btn-cyber-outline {
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(8px);
+  color: var(--text-pure);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-cyber-outline:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--text-pure);
+  color: var(--text-pure);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+/* Dashboard Elements */
+.profile-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle at top left, var(--crimson-neon), var(--bg-cyber-dark));
+  border: 2px solid var(--cyan-glow);
+  box-shadow: 0 0 15px rgba(13, 230, 230, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.dashboard-stat-value {
+  font-size: 5.5rem;
+  font-weight: 900;
+  color: var(--crimson-neon);
+  text-shadow: 0 0 40px rgba(255, 16, 83, 0.9);
+  line-height: 1;
+}
+
+.countdown-box {
+  display: inline-block;
+  background: rgba(255, 16, 83, 0.15);
+  border: 1px solid rgba(255, 16, 83, 0.4);
+  color: var(--text-pure);
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  margin: 0 0.15rem;
+  font-family: monospace;
+  font-size: 1.1rem;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.dashboard-card {
+  background: rgba(10, 15, 30, 0.85);
+  /* Slightly darker */
+  border-top: 1px solid rgba(0, 229, 255, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+}
+
+.text-shadow-glow {
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.4);
+}
+
+.tracking-wide {
+  letter-spacing: 0.15em;
+}
+
+/* Text Truncation Utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2; /* Standard property for compatibility */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+main {
+  flex: 1;
+}
+
+/* Hero Wrapper */
+.hero-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 0;
+  min-height: 600px;
+}
+
+/* Card Styling for Sub-Requests */
+.request-card {
+  border-left: 4px solid var(--crimson-neon);
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  border-top: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.request-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(13, 230, 230, 0.15);
+  /* Subtle cyan hover lift */
+}
+
+/* The Blood Drop 3D icon */
+.blood-drop-icon {
+  width: 40px;
+  height: 48px;
+  background: radial-gradient(circle at 30% 30%, #FF5A82, #FF1053, #990022);
+  border-radius: 0 50% 50% 50%;
+  transform: rotate(45deg);
+  box-shadow: inset 2px 2px 8px rgba(255, 255, 255, 0.5), 0 4px 10px rgba(255, 16, 83, 0.5);
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 15px;
+}
+
+/* Calendar Icon Styling */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.3s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.bi-calendar-white {
+  color: white !important;
+}

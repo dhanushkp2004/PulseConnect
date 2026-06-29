@@ -1,0 +1,342 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-gradient">System Administration</h2>
+    <span class="badge bg-secondary p-2">Admin View</span>
+</div>
+
+<ul class="nav nav-pills mb-4" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active rounded-pill text-light px-4" id="pending-tab" data-bs-toggle="pill"
+            data-bs-target="#pending" type="button" role="tab" style="background-color: rgba(255,255,255,0.05);">Pending
+            Approvals</button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+        <button class="nav-link rounded-pill text-light px-4" id="donors-tab" data-bs-toggle="pill"
+            data-bs-target="#donors" type="button" role="tab"
+            style="background-color: rgba(255,255,255,0.05);">Donors</button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+        <button class="nav-link rounded-pill text-light px-4" id="orgs-tab" data-bs-toggle="pill" data-bs-target="#orgs"
+            type="button" role="tab" style="background-color: rgba(255,255,255,0.05);">Organizations</button>
+    </li>
+    <li class="nav-item ms-2" role="presentation">
+        <button class="nav-link rounded-pill text-light px-4" id="events-tab" data-bs-toggle="pill"
+            data-bs-target="#events" type="button" role="tab"
+            style="background-color: rgba(255,255,255,0.05);">Events</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="adminTabsContent">
+    <!-- Pending Approvals Tab -->
+    <div class="tab-pane fade show active glass-panel p-4" id="pending" role="tabpanel">
+        <h4 class="mb-4 text-cyan-neon">Pending Requests</h4>
+
+        <h5 class="text-white-50 mb-3">Pending Donors</h5>
+        <div class="table-responsive mb-5">
+            <table class="table table-dark table-hover table-borderless align-middle m-0">
+                <thead>
+                    <tr class="border-bottom border-secondary text-muted">
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Blood Group</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in pending_donors %}
+                    <tr>
+                        <td class="text-light">{{ d.name }}</td>
+                        <td>{{ d.email }}</td>
+                        <td class="text-danger fw-bold">{{ d.blood_group }}</td>
+                        <td class="text-end">
+                            <form action="/dashboard/admin/approve_user/donor/{{ d.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit"
+                                    class="btn btn-sm btn-success rounded-pill px-3 me-2">Approve</button>
+                            </form>
+                            <form action="/dashboard/admin/reject_user/donor/{{ d.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="return confirm('Reject this registration?');">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-3 text-white">No pending donors.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h5 class="text-white-50 mb-3">Pending Organizations</h5>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover table-borderless align-middle m-0">
+                <thead>
+                    <tr class="border-bottom border-secondary text-muted">
+                        <th>Organization Name</th>
+                        <th>Email</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in pending_orgs %}
+                    <tr>
+                        <td class="text-light">{{ o.name }}</td>
+                        <td>{{ o.email }}</td>
+                        <td class="text-end">
+                            <form action="/dashboard/admin/approve_user/org/{{ o.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit"
+                                    class="btn btn-sm btn-success rounded-pill px-3 me-2">Approve</button>
+                            </form>
+                            <form action="/dashboard/admin/reject_user/org/{{ o.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="return confirm('Reject this registration?');">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center py-3 text-white">No pending organizations.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h5 class="text-white-50 mt-5 mb-3">Pending Events</h5>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover table-borderless align-middle m-0">
+                <thead>
+                    <tr class="border-bottom border-secondary text-muted">
+                        <th>Event Name</th>
+                        <th>Organization</th>
+                        <th>Date</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in pending_events %}
+                    <tr>
+                        <td class="text-light">{{ e.event_name }}</td>
+                        <td>{{ e.organization.name }}</td>
+                        <td>{{ e.date.strftime('%Y-%m-%d') }}</td>
+                        <td class="text-end">
+                            <form action="/dashboard/admin/approve_event/{{ e.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit"
+                                    class="btn btn-sm btn-success rounded-pill px-3 me-2">Approve</button>
+                            </form>
+                            <form action="/dashboard/admin/reject_event/{{ e.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="return confirm('Reject this event?');">Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-3 text-white">No pending events.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Active Donors Tab -->
+    <div class="tab-pane fade glass-panel p-4" id="donors" role="tabpanel">
+        <h4 class="mb-4">Registered Donors</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover table-borderless align-middle m-0"
+                style="background: transparent;">
+                <thead>
+                    <tr class="border-bottom border-secondary text-muted">
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Blood Group</th>
+                        <th>Last Donation</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in donors %}
+                    <tr>
+                        <td class="text-light">{{ d.name }}</td>
+                        <td>{{ d.email }}</td>
+                        <td class="text-danger fw-bold">{{ d.blood_group }}</td>
+                        <td>{{ d.last_donation_date if d.last_donation_date else 'Never' }}</td>
+                        <td class="text-end">
+                            <form action="/dashboard/admin/delete_donor/{{ d.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="return confirm('Are you sure you want to delete this donor?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-white">No donors registered.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade glass-panel p-4" id="orgs" role="tabpanel">
+        <h4 class="mb-4">Registered Organizations</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover table-borderless align-middle m-0"
+                style="background: transparent;">
+                <thead>
+                    <tr class="border-bottom border-secondary text-muted">
+                        <th>Organization Name</th>
+                        <th>Email Address</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for o in organizations %}
+                    <tr>
+                        <td class="text-light">{{ o.name }}</td>
+                        <td>{{ o.email }}</td>
+                        <td class="text-end">
+                            <form action="/dashboard/admin/delete_org/{{ o.id }}" method="POST" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="return confirm('Deleting an organization will also delete its events. Are you sure?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="3" class="text-center py-4 text-white">No organizations registered.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="tab-pane fade glass-panel p-4" id="events" role="tabpanel">
+        <h4 class="mb-4">All Blood Donation Events</h4>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover table-borderless align-middle m-0"
+                style="background: transparent;">
+                <thead>
+                    <tr class="border-bottom border-secondary text-muted">
+                        <th>Organization</th>
+                        <th>Event Name</th>
+                        <th>Date & Location</th>
+                        <th>Status</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in all_events %}
+                    <tr class="border-bottom border-white-5">
+                        <td class="text-light">{{ e.organization.name }}</td>
+                        <td>
+                            <div class="fw-bold text-white">{{ e.event_name }}</div>
+                            <div class="small text-white-50 line-clamp-2" style="max-width: 300px;">{{ e.description }}</div>
+                        </td>
+                        <td>
+                            <div class="small"><i class="bi bi-calendar-event me-2"></i>{{ e.date.strftime('%b %d, %Y') }}</div>
+                            <div class="small"><i class="bi bi-geo-alt me-2"></i>{{ e.location }}</div>
+                        </td>
+                        <td>
+                            {% if e.is_approved %}
+                            <span class="badge rounded-pill bg-success-subtle text-success px-3" style="font-size: 0.75rem;">Approved</span>
+                            {% else %}
+                            <span class="badge rounded-pill bg-warning-subtle text-warning px-3" style="font-size: 0.75rem;">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <button class="btn btn-sm btn-cyber-outline rounded-pill px-3 me-2" type="button" data-bs-toggle="collapse" data-bs-target="#donors-{{ e.id }}">
+                                <i class="bi bi-people me-1"></i> Donors ({{ e.interested_donors.count() }})
+                            </button>
+                            <form action="/dashboard/admin/delete_event/{{ e.id }}" method="POST"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    onclick="return confirm('Delete this event?');">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <!-- Expandable Donor List -->
+                    <tr class="collapse" id="donors-{{ e.id }}">
+                        <td colspan="5" class="p-0">
+                            <div class="p-4" style="background: rgba(0,0,0,0.3); border-radius: 0 0 1rem 1rem; border-top: 1px solid rgba(255,255,255,0.05);">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="text-cyan-neon m-0"><i class="bi bi-people-fill me-2"></i>Interested Donors for <span class="text-white">{{ e.event_name }}</span></h6>
+                                    <span class="text-white-50 small">{{ e.interested_donors.count() }} donor(s) identified</span>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-dark table-borderless m-0">
+                                        <thead>
+                                            <tr class="small text-muted border-bottom border-white-10">
+                                                <th class="py-2">Donor Name</th>
+                                                <th class="py-2">Blood Group</th>
+                                                <th class="py-2">Email</th>
+                                                <th class="py-2">Phone</th>
+                                                <th class="py-2 text-end">Contact</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for donor in e.interested_donors %}
+                                            <tr class="border-bottom border-white-5">
+                                                <td class="py-3 text-white fw-semibold">{{ donor.name }}</td>
+                                                <td class="py-3"><span class="text-danger fw-bold">{{ donor.blood_group }}</span></td>
+                                                <td class="py-3 text-white-50">{{ donor.email }}</td>
+                                                <td class="py-3 text-white-50">{{ donor.phone }}</td>
+                                                <td class="py-3 text-end">
+                                                    <a href="tel:{{ donor.phone }}" class="btn btn-sm btn-cyber-outline rounded-pill px-3">
+                                                        <i class="bi bi-telephone"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {% else %}
+                                            <tr>
+                                                <td colspan="5" class="text-center py-4 text-white-50 small italic">No donors interested yet.</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-white">No events currently registered.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-pills .nav-link.active {
+        background: linear-gradient(45deg, var(--primary), var(--secondary)) !important;
+    }
+
+    .border-white-5 {
+        border-color: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .border-white-10 {
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .text-cyan-neon {
+        color: var(--cyan-glow);
+        text-shadow: 0 0 10px rgba(0, 229, 255, 0.3);
+    }
+</style>
+{% endblock %}
